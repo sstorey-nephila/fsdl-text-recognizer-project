@@ -12,7 +12,7 @@ from text_recognizer.networks.misc import slide_window
 from text_recognizer.networks.ctc import ctc_decode
 
 
-def line_lstm_ctc(input_shape, output_shape, window_width=28, window_stride=14):
+def line_lstm_ctc(input_shape, output_shape, window_width=12, window_stride=6):
     image_height, image_width = input_shape
     output_length, num_classes = output_shape
 
