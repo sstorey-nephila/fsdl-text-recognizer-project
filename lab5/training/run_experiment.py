@@ -14,8 +14,8 @@ from training.util import train_model
 
 
 DEFAULT_TRAIN_ARGS = {
-    'batch_size': 2,
-    'epochs': 32
+    'batch_size': 256,
+    'epochs': 16
 }
 
 
@@ -34,8 +34,8 @@ def run_experiment(experiment_config: Dict, save_weights: bool, gpu_ind: int, us
             "window_stride": 7
         },
         "train_args": {
-            "batch_size": 128,
-            "epochs": 10
+            "batch_size": 256,
+            "epochs": 20
         }
     }
     save_weights: if True, will save the final model weights to a canonical location (see Model in models/base.py)

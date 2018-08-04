@@ -12,14 +12,14 @@ def line_cnn_all_conv(
         input_shape: Tuple[int, ...],
         output_shape: Tuple[int, ...],
         window_width: float=16,
-        window_stride: float=8) -> KerasModel:
+        window_stride: float=4) -> KerasModel:
     image_height, image_width = input_shape
     output_length, num_classes = output_shape
 
     model = Sequential()
     model.add(Reshape((image_height, image_width, 1), input_shape=input_shape))
-    model.add(Conv2D(32, kernel_size=(3, 3), activation='relu'))
-    model.add(Conv2D(64, (3, 3), activation='relu'))
+    model.add(Conv2D(64, kernel_size=(3, 3), activation='relu'))
+    model.add(Conv2D(128, (3, 3), activation='relu'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.2))
 
