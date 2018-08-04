@@ -1,0 +1,4 @@
+[default]
+entity: sstorey-nephila
+project: fullstack_lab4
+base_url: https://api.wandb.ai
