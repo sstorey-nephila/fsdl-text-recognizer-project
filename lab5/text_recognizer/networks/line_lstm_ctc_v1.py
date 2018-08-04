@@ -38,21 +38,23 @@ def line_lstm_ctc(input_shape, output_shape, window_width=28, window_stride=14):
     image_reshaped = Reshape((image_height, image_width, 1))(image_input)
     # (image_height, image_width, 1)
 
-    conv = Conv2D(128,(image_height, window_width),(1,window_Stride),activation='relu')(image_reshaped)
-    # (1,num_windows,128)
-    
-    conv_squeezed = Lambda(lambda x: K.squeeze(x,1))(conv)
+    image_patches = Lambda(
+        slide_window,
+        arguments={'window_width': window_width, 'window_stride': window_stride}
+    )(image_reshaped)
+    # (num_windows, image_height, window_width, 1)
+
+    # Make a LeNet and get rid of the last two layers (softmax and dropout)
+    convnet = lenet((image_height, window_width, 1), (num_classes,))
+    convnet = KerasModel(inputs=convnet.inputs, outputs=convnet.layers[-2].output)
+    convnet_outputs = TimeDistributed(convnet)(image_patches)
     # (num_windows, 128)
-    
-    lstm_output = Bidirectional(lstm_fn(128,return_sequences=True))(conv_squeezed)
-    # (num_windows, 128 *2 ) ~ as bidirectional
-    
-    lstm_output2 = Bidirectional(lstm_fn(128,return_sequences=True))(lstm_output)
-    # (num_windows, 128 *2 ) ~ as bidirectional
-    
-    softmax_output = Dense(num_classes, activation='softmax', name='softmax_output')(lstm_output2)
+
+    lstm_output = lstm_fn(128, return_sequences=True)(convnet_outputs)
+    # (num_windows, 128)
+
+    softmax_output = Dense(num_classes, activation='softmax', name='softmax_output')(lstm_output)
     # (num_windows, num_classes)
-    
     ##### Your code above (Lab 3)
 
     input_length_processed = Lambda(
